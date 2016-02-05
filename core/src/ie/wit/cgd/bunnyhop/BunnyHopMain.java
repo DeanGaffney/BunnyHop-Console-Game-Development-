@@ -1,6 +1,8 @@
 package ie.wit.cgd.bunnyhop;
 
 import ie.wit.cgd.bunnyhop.game.WorldController;
+import com.badlogic.gdx.assets.AssetManager;
+import ie.wit.cgd.bunnyhop.game.Assets;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,17 +23,19 @@ public class BunnyHopMain extends ApplicationAdapter {
 	private WorldRenderer worldRenderer;
 	private boolean paused;
 
-	@Override public void create () { 
-		//set libgdx log level to DEBUG
-		Gdx.app.setLogLevel(Application.LOG_DEBUG); // change this when finished
+	@Override
+	public void create() {
 
-		//Initialise controller and renderer
-		worldController = new WorldController();
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);             // Set Libgdx log level to DEBUG
+
+		Assets.instance.init(new AssetManager());               // Load assets
+
+		worldController = new WorldController();                // Initialize controller and renderer
 		worldRenderer = new WorldRenderer(worldController);
 
-		//game world is active on start
-		paused = false;
+		paused = false;                                         // Game world is active on start
 	}
+
 
 	@Override public void render () { 
 		// Update game world by the time that has passed since last rendered frame.
@@ -59,10 +63,15 @@ public class BunnyHopMain extends ApplicationAdapter {
 	@Override public void pause () { 
 		paused = true;
 	}
-	@Override public void resume () { 
-		paused = false;
-	}
-	@Override public void dispose () { 
-		worldRenderer.dispose();
-	}
+	@Override
+    public void resume() {
+        Assets.instance.init(new AssetManager());
+        paused = false;
+    }
+
+	@Override
+    public void dispose() {
+        worldRenderer.dispose();
+        Assets.instance.dispose();
+    }
 }
