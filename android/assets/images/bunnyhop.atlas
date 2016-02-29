@@ -6,30 +6,37 @@ filter: Nearest,Nearest
 repeat: none
 bunny_head
   rotate: false
-  xy: 516, 116
+  xy: 871, 474
   size: 122, 82
   orig: 122, 82
   offset: 0, 0
   index: -1
 cloud01
   rotate: false
-  xy: 669, 301
+  xy: 550, 104
   size: 178, 78
   orig: 178, 78
   offset: 0, 0
   index: -1
 cloud02
   rotate: false
-  xy: 669, 468
+  xy: 669, 271
   size: 198, 88
   orig: 198, 88
   offset: 0, 0
   index: -1
 cloud03
   rotate: false
-  xy: 669, 381
+  xy: 669, 184
   size: 182, 85
   orig: 182, 85
+  offset: 0, 0
+  index: -1
+goal
+  rotate: false
+  xy: 669, 361
+  size: 200, 195
+  orig: 200, 195
   offset: 0, 0
   index: -1
 ic_launcher
@@ -48,7 +55,7 @@ item_feather
   index: -1
 item_gold_coin
   rotate: false
-  xy: 869, 500
+  xy: 871, 416
   size: 56, 56
   orig: 56, 56
   offset: 0, 0
@@ -83,7 +90,7 @@ rock_middle
   index: -1
 water_overlay
   rotate: false
-  xy: 669, 139
+  xy: 516, 38
   size: 32, 160
   orig: 32, 160
   offset: 0, 0
