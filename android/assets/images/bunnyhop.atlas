@@ -39,6 +39,13 @@ goal
   orig: 200, 195
   offset: 0, 0
   index: -1
+heart
+  rotate: false
+  xy: 871, 408
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 ic_launcher
   rotate: false
   xy: 2, 44
@@ -55,7 +62,7 @@ item_feather
   index: -1
 item_gold_coin
   rotate: false
-  xy: 871, 416
+  xy: 550, 46
   size: 56, 56
   orig: 56, 56
   offset: 0, 0

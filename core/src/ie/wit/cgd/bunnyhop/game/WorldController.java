@@ -8,6 +8,7 @@ import ie.wit.cgd.bunnyhop.game.objects.BunnyHead.JUMP_STATE;
 import ie.wit.cgd.bunnyhop.game.objects.Feather;
 import ie.wit.cgd.bunnyhop.game.objects.Goal;
 import ie.wit.cgd.bunnyhop.game.objects.GoldCoin;
+import ie.wit.cgd.bunnyhop.game.objects.Heart;
 import ie.wit.cgd.bunnyhop.game.objects.Rock;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -31,11 +32,15 @@ public class WorldController extends InputAdapter{
 
 	public CameraHelper			cameraHelper;
 	public Level    level;
+	public int		currentLevel = 1;
 	public int      lives;
+	public float	timer;
 	public int      score;
+	public int		goals;
 	private Rectangle   r1  = new Rectangle();
 	private Rectangle   r2  = new Rectangle();
 	private float timeLeftGameOverDelay;
+
 
 	public WorldController(){
 		init();
@@ -45,7 +50,7 @@ public class WorldController extends InputAdapter{
 		Gdx.input.setInputProcessor(this);
 		cameraHelper = new CameraHelper();
 		lives = Constants.LIVES_START;
-		initLevel();
+		initLevel(currentLevel);
 	}
 
 	private void handleDebugInput(float deltaTime) {
@@ -79,20 +84,52 @@ public class WorldController extends InputAdapter{
 		cameraHelper.setPosition(x, y);
 	}
 
-	private void initLevel() {
+	private void initLevel(int currentLevel) {
 		score = 0;
-		level = new Level(Constants.LEVEL_01);
+		goals = 0;
+		timer = Constants.LEVEL_TIMER;
+		switch(currentLevel){
+		case 1:
+			level = new Level(Constants.LEVEL_01);
+			break;
+		case 2:
+			level = new Level(Constants.LEVEL_02);
+			break;
+		case 3:
+			level = new Level(Constants.LEVEL_03);
+			break;
+		}
 		cameraHelper.setTarget(level.bunnyHead);
 	}
 
+	//allows you to reset the game world,toggle camera follow on/off and switch levels according to numberpad.
 	@Override
 	public boolean keyUp(int keycode) {
-		if (keycode == Keys.R) {                                // Reset game world
+		switch (keycode) { // Reset game world
+		case Keys.R:
 			init();
 			Gdx.app.debug(TAG, "Game world resetted");
-		} else if (keycode == Keys.ENTER) {                 // Toggle camera follow
+			break;
+		case Keys.ENTER:
+			// Toggle camera follow
 			cameraHelper.setTarget(cameraHelper.hasTarget() ? null : level.bunnyHead);
 			Gdx.app.debug(TAG, "Camera follow enabled: " + cameraHelper.hasTarget());
+			break;
+		case Keys.NUM_1:
+			currentLevel = 1;
+			Gdx.app.debug(TAG, "Level 1 selected ");
+			init();
+			break;
+		case Keys.NUM_2:
+			currentLevel = 2;
+			Gdx.app.debug(TAG, "Level 2 selected ");
+			init();
+			break;
+		case Keys.NUM_3:
+			currentLevel = 3;
+			Gdx.app.debug(TAG, "Level 3 selected ");
+			init();
+			break;
 		}
 		return false;
 	}
@@ -121,6 +158,7 @@ public class WorldController extends InputAdapter{
 
 	public void update(float deltaTime){
 		handleDebugInput(deltaTime);
+		timer -= deltaTime;
 		if (isGameOver()) {
 			timeLeftGameOverDelay -= deltaTime;
 			if (timeLeftGameOverDelay < 0) init();
@@ -134,7 +172,7 @@ public class WorldController extends InputAdapter{
 			lives--;
 			if (isGameOver()) timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
 			else
-				initLevel();
+				initLevel(currentLevel);
 		}
 		// game over, just wait until message is finished displaying
 		if(isGameWon()) {
@@ -177,6 +215,16 @@ public class WorldController extends InputAdapter{
 		Gdx.app.log(TAG, "Gold coin collected");
 	};
 
+	//allocates extra life if player needs one and collides with a heart game object.
+	private void onCollisionBunnyWithHeart(Heart heart){
+		if(lives < Constants.LIVES_START){
+			heart.collected = true;
+			lives++;
+			System.out.println(lives);
+			Gdx.app.log(TAG, "Heart collected");
+		}
+	}
+
 	private void onCollisionBunnyWithFeather(Feather feather) {
 		feather.collected = true;
 		score += feather.getScore();
@@ -186,9 +234,12 @@ public class WorldController extends InputAdapter{
 
 	private void onCollisionBunnyWithGoal(Goal goal){
 		goal.collected = true;
+		goals++;
 		Gdx.app.log(TAG, "Goal collected");
-		
-		timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
+		if(goals == level.goals.size && currentLevel + 1 < Constants.NUM_OF_LEVELS){
+			currentLevel++;
+			timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
+		}
 	};
 
 
@@ -224,18 +275,32 @@ public class WorldController extends InputAdapter{
 		}
 
 		//test collision with BunnyHead <-> Goal
-		r2.set(level.goal.position.x, level.goal.position.y, level.goal.bounds.width, level.goal.bounds.height);
-		if(r1.overlaps(r2)){
-			onCollisionBunnyWithGoal(level.goal);
+		for(Goal goal : level.goals){
+			if(goal.collected)continue;
+			r2.set(goal.position.x,goal.position.y,goal.bounds.width,goal.bounds.height);
+			if(!r1.overlaps(r2))continue;
+			onCollisionBunnyWithGoal(goal);
+		}
+
+		for(Heart heart : level.hearts){
+			if(heart.collected)continue;
+			r2.set(heart.position.x,heart.position.y,heart.bounds.width,heart.bounds.height);
+			if(!r1.overlaps(r2))continue;
+			onCollisionBunnyWithHeart(heart);
+			System.out.println("Collided with heart");
 		}
 	}
 
 	public boolean isGameWon(){
-		return level.goal.collected;
+		for(Goal goal : level.goals){
+			if(!goal.collected)return false;
+		}
+		return true;
 	}
 
 	public boolean isGameOver() {
-		return lives <= 0;
+		
+		return lives <= 0 || timer <= 0;
 	}
 
 	public boolean isPlayerInWater() {

@@ -25,6 +25,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetLevelDecoration levelDecoration;
 	public AssetFonts			fonts;
 	public AssetGoal			goal;
+	public AssetHeart			heart;
 
 	// singleton: prevent instantiation from other classes
 	private Assets() {}
@@ -78,6 +79,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		goldCoin = new AssetGoldCoin(atlas);
 		feather = new AssetFeather(atlas);
 		goal = new AssetGoal(atlas);
+		heart = new AssetHeart(atlas);
 		levelDecoration = new AssetLevelDecoration(atlas);
 	}
 
@@ -133,6 +135,14 @@ public class Assets implements Disposable, AssetErrorListener {
 		
 		public AssetGoal(TextureAtlas atlas){
 			goal = atlas.findRegion("goal");
+		}
+	}
+	
+	public class AssetHeart{
+		public final AtlasRegion	heart;
+		
+		public AssetHeart(TextureAtlas atlas){
+			heart = atlas.findRegion("heart");
 		}
 	}
 

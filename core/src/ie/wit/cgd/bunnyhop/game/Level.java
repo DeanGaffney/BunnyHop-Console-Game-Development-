@@ -11,6 +11,7 @@ import ie.wit.cgd.bunnyhop.game.objects.Clouds;
 import ie.wit.cgd.bunnyhop.game.objects.Feather;
 import ie.wit.cgd.bunnyhop.game.objects.Goal;
 import ie.wit.cgd.bunnyhop.game.objects.GoldCoin;
+import ie.wit.cgd.bunnyhop.game.objects.Heart;
 import ie.wit.cgd.bunnyhop.game.objects.Mountains;
 import ie.wit.cgd.bunnyhop.game.objects.Rock;
 import ie.wit.cgd.bunnyhop.game.objects.WaterOverlay;
@@ -25,7 +26,8 @@ public class Level {
 		PLAYER_SPAWNPOINT(255, 255, 255), // white
 		ITEM_FEATHER(255, 0, 255),        // purple
 		ITEM_GOLD_COIN(255, 255, 0),      // yellow
-		GOAL(0,0,255);					  // blue
+		GOAL(0,0,255),					  // blue
+		HEART(255,0,0);					  // red
 
 		private int color;
 
@@ -45,7 +47,8 @@ public class Level {
 	// objects
 	public Array<Rock>  rocks;
 	public BunnyHead bunnyHead;
-	public Goal goal;
+	public Array<Goal> goals;
+	public Array<Heart> hearts;
 	public Array<GoldCoin> goldCoins;
 	public Array<Feather> feathers;
 
@@ -63,8 +66,8 @@ public class Level {
 		// player character
 		bunnyHead = null;
 
-		goal = null;
-
+		goals = new Array<Goal>();
+		hearts = new Array<Heart>();
 		// objects
 		rocks = new Array<Rock>();
 		goldCoins = new Array<GoldCoin>();
@@ -117,7 +120,13 @@ public class Level {
 					obj = new Goal();
 					offsetHeight = -2.5f;
 					obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
-					goal = (Goal)obj;
+					goals.add((Goal)obj);
+				}else if(BLOCK_TYPE.HEART.sameColor(currentPixel)){
+					obj = new Heart();
+					offsetHeight = -2.0f;
+					obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
+					hearts.add((Heart)obj);
+					System.out.println("Spawned heart");
 				}else {                                                                // unknown object/pixel color
 					int r = 0xff & (currentPixel >>> 24); // red color channel
 					int g = 0xff & (currentPixel >>> 16); // green color channel
@@ -150,22 +159,29 @@ public class Level {
 		for (GoldCoin goldCoin : goldCoins)             // Draw Gold Coins
 			goldCoin.render(batch);             
 		for (Feather feather : feathers)                // Draw Feathers
-			feather.render(batch);              
+			feather.render(batch); 
+		for(Heart heart : hearts)
+			heart.render(batch);
+		for(Goal goal : goals)
+			goal.render(batch);
+		
 		bunnyHead.render(batch);    
-		goal.render(batch);// Draw Player Character
 		waterOverlay.render(batch);                     // Draw Water Overlay
 		clouds.render(batch);                           // Draw Clouds
 	}
 
 	public void update(float deltaTime) {
 		bunnyHead.update(deltaTime);
-		goal.update(deltaTime);
+		for(Goal goal : goals)
+			goal.update(deltaTime);
 		for (Rock rock : rocks)
 			rock.update(deltaTime);
 		for (GoldCoin goldCoin : goldCoins)
 			goldCoin.update(deltaTime);
 		for (Feather feather : feathers)
 			feather.update(deltaTime);
+		for(Heart heart : hearts)
+			heart.update(deltaTime);
 		clouds.update(deltaTime);
 	}
 }

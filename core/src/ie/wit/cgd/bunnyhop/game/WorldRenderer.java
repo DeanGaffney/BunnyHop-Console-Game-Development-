@@ -1,5 +1,6 @@
 package ie.wit.cgd.bunnyhop.game;
 
+import ie.wit.cgd.bunnyhop.game.objects.GoldCoin;
 import ie.wit.cgd.bunnyhop.util.Constants;
 
 import com.badlogic.gdx.Gdx;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class WorldRenderer implements Disposable{
 
@@ -72,6 +74,7 @@ public class WorldRenderer implements Disposable{
 		}
 	}
 
+
 	private void renderGuiFpsCounter(SpriteBatch batch) {
 		float x = cameraGUI.viewportWidth - 55;
 		float y = cameraGUI.viewportHeight - 15;
@@ -104,14 +107,41 @@ public class WorldRenderer implements Disposable{
 
 		// draw FPS text (anchored to bottom right edge)
 		renderGuiFpsCounter(batch);
-		
+
+		//draw remaining goals and icon next to score.
+		renderRemainingGoals(batch);
+
+		//renderGuiCoinCollectedMessage(batch);
 		renderGuiGameOverMessage(batch);
-		
+		renderGuiLevelTimer(batch);
 		renderGuiFeatherPowerup(batch);
-		
+
 		renderGuiGameWonMessage(batch);
 		batch.end();
 	}
+
+	private void renderGuiExtraLifeMessage(SpriteBatch batch){
+		//TO DO display message when you pick up a life.
+
+	}
+
+
+	/*private void renderGuiCoinCollectedMessage(SpriteBatch batch){
+		//TO DO display message when gold coin is collected.
+		float x = cameraGUI.viewportWidth / 2;
+		float y = cameraGUI.viewportHeight / 2;
+		float displayTime = TimeUtils.nanoTime();
+		boolean display = false;
+		for(GoldCoin goldCoin: worldController.level.goldCoins){
+			if(goldCoin.collected && displayTime > 100000000){
+				BitmapFont fontGameOver = Assets.instance.fonts.defaultNormal;
+				fontGameOver.setColor(1, 0.75f, 0.25f, 1);
+				fontGameOver.draw(batch, "+100", x, y, 0, Align.center,true);
+				fontGameOver.setColor(1, 1, 1, 1);
+				displayTime -= Gdx.graphics.getDeltaTime();
+			}
+		}
+	}*/
 
 	private void renderGuiGameWonMessage(SpriteBatch batch){
 		float x = cameraGUI.viewportWidth / 2;
@@ -123,7 +153,37 @@ public class WorldRenderer implements Disposable{
 			fontGameOver.setColor(1, 1, 1, 1);
 		}
 	}
-	
+
+	private void renderRemainingGoals(SpriteBatch batch){
+		float x = -15;
+		float y = 30;
+		int remainingGoals = worldController.level.goals.size - worldController.goals;
+		batch.draw(Assets.instance.goal.goal, x, y, 50, 50, 100, 100, 0.35f, -0.35f, 0);
+		Assets.instance.fonts.defaultBig.draw(batch, "" + remainingGoals, x + 75, y + 37);
+	}
+
+	private void renderGuiLevelTimer(SpriteBatch batch){
+		float x = 80;
+		float y = 465;
+		
+		float timer = worldController.timer;
+		int mins = (int)(timer/60);
+		int secs = (int)(timer%60);
+		int milli = (int)(timer * 100) % 100;
+		BitmapFont fontTimer = Assets.instance.fonts.defaultNormal;
+		fontTimer.setColor(1, 0.75f, 0.25f, 1);
+		fontTimer.draw(batch, "Time remaining: "+mins+":"+secs+":"+milli, x, y, 0, Align.center,true);
+		fontTimer.setColor(0, 0, 1, 1);
+		
+		if(worldController.timer <= 0){
+			BitmapFont fontOutOfTime = Assets.instance.fonts.defaultBig;
+			fontOutOfTime.setColor(1, 0.75f, 0.25f, 1);
+			fontOutOfTime.draw(batch, "OUT OF TIME!", x, y, 0, Align.center,true);
+			fontOutOfTime.setColor(1, 1, 1, 1);
+		}
+	}
+
+
 	private void renderGuiGameOverMessage(SpriteBatch batch) {
 		float x = cameraGUI.viewportWidth / 2;
 		float y = cameraGUI.viewportHeight / 2;

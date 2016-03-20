@@ -11,11 +11,20 @@ public class Constants {
     // Location of description file for texture atlas
     public static final String TEXTURE_ATLAS_OBJECTS    = "images/bunnyhop.atlas";
 
-    // Location of image file for level 01
+    //Amount of levels in game
+    public static final int NUM_OF_LEVELS 				= 9;
+    
+    // Location of image file for levels
     public static final String LEVEL_01                 = "levels/level-01.png";    
+    public static final String LEVEL_02					= "levels/level-02.png";
+    public static final String LEVEL_03					= "levels/level-03.png";
 
     public static final int LIVES_START                 = 3;            // Amount of extra lives at level start
+    
 	public static final float ITEM_FEATHER_POWERUP_DURATION = 9;
+	
+	public static final float LEVEL_TIMER = 10;
+	
 	  // Delay after game over
     public static final float TIME_DELAY_GAME_OVER = 3;
 }
