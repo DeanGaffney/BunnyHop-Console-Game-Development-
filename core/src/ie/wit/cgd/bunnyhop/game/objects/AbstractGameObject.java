@@ -1,3 +1,12 @@
+/**
+ * @file        AbstractGameObject.java
+ * @author      Dean Gaffney 20067423
+ * @assignment  Sets out a base for all game objects.
+ * @brief       This class controls all game objects behaviors.
+ *
+ * @notes       
+ * 				
+ */
 package ie.wit.cgd.bunnyhop.game.objects;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;

@@ -1,3 +1,12 @@
+/**
+ * @file        CameraHelper.java
+ * @author      Dean Gaffney 20067423
+ * @assignment  A camera for debugging.
+ * @brief       This class controls all debugging camera purposes.
+ *
+ * @notes       
+ * 				
+ */
 package ie.wit.cgd.bunnyhop.util;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;

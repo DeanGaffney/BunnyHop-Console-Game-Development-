@@ -1,3 +1,12 @@
+/**
+ * @file        Heart.java
+ * @author      Dean Gaffney 20067423
+ * @assignment  Heart item for the game.
+ * @brief       This class controls all the collection of extra lives.
+ *
+ * @notes       
+ * 				
+ */
 package ie.wit.cgd.bunnyhop.game.objects;
 
 import ie.wit.cgd.bunnyhop.game.Assets;

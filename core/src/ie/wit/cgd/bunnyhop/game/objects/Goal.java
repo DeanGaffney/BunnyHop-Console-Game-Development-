@@ -1,3 +1,12 @@
+/**
+ * @file        Goal.java
+ * @author      Dean Gaffney 20067423
+ * @assignment  Goal items for each level.
+ * @brief       This class controls all aspects of goals within thegame.
+ *
+ * @notes       
+ * 				
+ */
 package ie.wit.cgd.bunnyhop.game.objects;
 
 import ie.wit.cgd.bunnyhop.game.Assets;

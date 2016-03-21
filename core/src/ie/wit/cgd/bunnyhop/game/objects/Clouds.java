@@ -1,3 +1,12 @@
+/**
+ * @file        Clouds.java
+ * @author      Dean Gaffney 20067423
+ * @assignment  Sets the behavior of clouds.
+ * @brief       This class controls all aspects of the clouds in the game.
+ *
+ * @notes       
+ * 				
+ */
 package ie.wit.cgd.bunnyhop.game.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

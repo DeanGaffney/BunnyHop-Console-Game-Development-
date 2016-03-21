@@ -1,29 +1,29 @@
+/**
+ * @file        WorldController.java
+ * @author      Dean Gaffney 20067423
+ * @assignment  WorldController for the game.
+ * @brief       This class controls all of the game.
+ *
+ * @notes       
+ * 				
+ */
 package ie.wit.cgd.bunnyhop.game;
 
-import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Rectangle;
 
 import ie.wit.cgd.bunnyhop.game.objects.BunnyHead;
 import ie.wit.cgd.bunnyhop.game.objects.BunnyHead.JUMP_STATE;
+import ie.wit.cgd.bunnyhop.game.objects.CoffeeCup;
 import ie.wit.cgd.bunnyhop.game.objects.Feather;
 import ie.wit.cgd.bunnyhop.game.objects.Goal;
 import ie.wit.cgd.bunnyhop.game.objects.GoldCoin;
 import ie.wit.cgd.bunnyhop.game.objects.Heart;
 import ie.wit.cgd.bunnyhop.game.objects.Rock;
-
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputAdapter;
-
 import ie.wit.cgd.bunnyhop.util.CameraHelper;
-import ie.wit.cgd.bunnyhop.game.objects.Rock;
 import ie.wit.cgd.bunnyhop.util.Constants;
 
 public class WorldController extends InputAdapter{
@@ -37,9 +37,9 @@ public class WorldController extends InputAdapter{
 	public float	timer;
 	public int      score;
 	public int		goals;
-	private Rectangle   r1  = new Rectangle();
-	private Rectangle   r2  = new Rectangle();
-	private float timeLeftGameOverDelay;
+	public Rectangle   r1  = new Rectangle();
+	public Rectangle   r2  = new Rectangle();
+	private float timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
 
 
 	public WorldController(){
@@ -98,6 +98,12 @@ public class WorldController extends InputAdapter{
 		case 3:
 			level = new Level(Constants.LEVEL_03);
 			break;
+		case 4:
+			level = new Level(Constants.LEVEL_04);
+			break;
+		case 5:
+			level = new Level(Constants.LEVEL_05);
+			break;
 		}
 		cameraHelper.setTarget(level.bunnyHead);
 	}
@@ -128,6 +134,16 @@ public class WorldController extends InputAdapter{
 		case Keys.NUM_3:
 			currentLevel = 3;
 			Gdx.app.debug(TAG, "Level 3 selected ");
+			init();
+			break;
+		case Keys.NUM_4:
+			currentLevel = 4;
+			Gdx.app.debug(TAG, "Level 4 selected ");
+			init();
+			break;
+		case Keys.NUM_5:
+			currentLevel = 5;
+			Gdx.app.debug(TAG, "Level 5 selected ");
 			init();
 			break;
 		}
@@ -161,6 +177,7 @@ public class WorldController extends InputAdapter{
 		timer -= deltaTime;
 		if (isGameOver()) {
 			timeLeftGameOverDelay -= deltaTime;
+			System.out.println("Time left over delay: " + timeLeftGameOverDelay);
 			if (timeLeftGameOverDelay < 0) init();
 		} else {
 			handleInputGame(deltaTime);
@@ -174,10 +191,15 @@ public class WorldController extends InputAdapter{
 			else
 				initLevel(currentLevel);
 		}
-		// game over, just wait until message is finished displaying
+
+		// game over, just wait until message is finished displaying.
+		//then decide what level is next.
 		if(isGameWon()) {
 			timeLeftGameOverDelay -= deltaTime;
-			if (timeLeftGameOverDelay < 0) init();
+			if (timeLeftGameOverDelay < 0) {
+				currentLevel = (currentLevel + 1 <= Constants.NUM_OF_LEVELS) ? currentLevel + 1:1;
+				init();
+			}
 		}
 	}
 
@@ -225,6 +247,13 @@ public class WorldController extends InputAdapter{
 		}
 	}
 
+	private void onCollisionBunnyWithCoffee(CoffeeCup coffeeCup){
+		coffeeCup.collected = true;
+		score += coffeeCup.getScore();
+		level.bunnyHead.setCoffeePowerup(true);
+		Gdx.app.log(TAG, "Coffee collected");
+	}
+
 	private void onCollisionBunnyWithFeather(Feather feather) {
 		feather.collected = true;
 		score += feather.getScore();
@@ -236,10 +265,7 @@ public class WorldController extends InputAdapter{
 		goal.collected = true;
 		goals++;
 		Gdx.app.log(TAG, "Goal collected");
-		if(goals == level.goals.size && currentLevel + 1 < Constants.NUM_OF_LEVELS){
-			currentLevel++;
-			timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
-		}
+		timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
 	};
 
 
@@ -274,6 +300,14 @@ public class WorldController extends InputAdapter{
 			break;
 		}
 
+		for(CoffeeCup coffeeCup : level.coffeeCups){
+			if(coffeeCup.collected)continue;
+			r2.set(coffeeCup.position.x, coffeeCup.position.y, coffeeCup.bounds.width, coffeeCup.bounds.height);
+			if(!r1.overlaps(r2))continue;
+			onCollisionBunnyWithCoffee(coffeeCup);
+			break;
+		}
+
 		//test collision with BunnyHead <-> Goal
 		for(Goal goal : level.goals){
 			if(goal.collected)continue;
@@ -295,12 +329,13 @@ public class WorldController extends InputAdapter{
 		for(Goal goal : level.goals){
 			if(!goal.collected)return false;
 		}
+		if(score < Constants.REQUIRED_SCORE) return false;
+		//this code should only be reached when the game is won
 		return true;
 	}
 
 	public boolean isGameOver() {
-		
-		return lives <= 0 || timer <= 0;
+		return (lives <=0 || timer <=0) ? true:false;
 	}
 
 	public boolean isPlayerInWater() {

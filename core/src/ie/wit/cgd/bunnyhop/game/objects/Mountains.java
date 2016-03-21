@@ -1,3 +1,12 @@
+/**
+ * @file        Mountains.java
+ * @author      Dean Gaffney 20067423
+ * @assignment  Mountain background for the game.
+ * @brief       This class controls all mountain decorating for the game.
+ *
+ * @notes       
+ * 				
+ */
 package ie.wit.cgd.bunnyhop.game.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

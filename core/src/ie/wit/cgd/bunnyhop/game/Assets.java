@@ -1,3 +1,12 @@
+/**
+ * @file        Assets.java
+ * @author      Dean Gaffney 20067423
+ * @assignment  Creates all Assets for the game.
+ * @brief       This class controls all the assets for the game.
+ *
+ * @notes       
+ * 				
+ */
 package ie.wit.cgd.bunnyhop.game;
 
 import ie.wit.cgd.bunnyhop.util.Constants;
@@ -26,6 +35,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetFonts			fonts;
 	public AssetGoal			goal;
 	public AssetHeart			heart;
+	public AssetCoffeeCup		coffeeCup;
 
 	// singleton: prevent instantiation from other classes
 	private Assets() {}
@@ -76,6 +86,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		fonts = new AssetFonts();
 		bunny = new AssetBunny(atlas);
 		rock = new AssetRock(atlas);
+		coffeeCup = new AssetCoffeeCup(atlas);
 		goldCoin = new AssetGoldCoin(atlas);
 		feather = new AssetFeather(atlas);
 		goal = new AssetGoal(atlas);
@@ -103,7 +114,7 @@ public class Assets implements Disposable, AssetErrorListener {
 			head = atlas.findRegion("bunny_head");
 		}
 	}
-
+	
 	public class AssetRock {
 		public final AtlasRegion    edge;
 		public final AtlasRegion    middle;
@@ -127,6 +138,14 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		public AssetFeather(TextureAtlas atlas) {
 			feather = atlas.findRegion("item_feather");
+		}
+	}
+	
+	public class AssetCoffeeCup{
+		public final AtlasRegion	coffeeCup;
+		
+		public AssetCoffeeCup(TextureAtlas atlas){
+			coffeeCup = atlas.findRegion("java_coffee_cup");
 		}
 	}
 	

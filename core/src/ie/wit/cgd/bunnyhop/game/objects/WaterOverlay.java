@@ -1,3 +1,12 @@
+/**
+ * @file        WaterOverlay.java
+ * @author      Dean Gaffney 20067423
+ * @assignment  Water for the games level.
+ * @brief       This class controls all aspects of the water in the game.
+ *
+ * @notes       
+ * 				
+ */
 package ie.wit.cgd.bunnyhop.game.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

@@ -1,3 +1,12 @@
+/**
+ * @file        GoldCoin.java
+ * @author      Dean Gaffney 20067423
+ * @assignment  Gold Coin items for the game.
+ * @brief       This class controls all aspects of gold coins for the game.
+ *
+ * @notes       
+ * 				
+ */
 package ie.wit.cgd.bunnyhop.game.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

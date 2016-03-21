@@ -1,3 +1,12 @@
+/**
+ * @file        Level.java
+ * @author      Dean Gaffney 20067423
+ * @assignment  The level class for the game.
+ * @brief       This class controls the items to be rendered for the games current level.
+ *
+ * @notes       
+ * 				
+ */
 package ie.wit.cgd.bunnyhop.game;
 
 import com.badlogic.gdx.Gdx;
@@ -8,6 +17,7 @@ import com.badlogic.gdx.utils.Array;
 import ie.wit.cgd.bunnyhop.game.objects.AbstractGameObject;
 import ie.wit.cgd.bunnyhop.game.objects.BunnyHead;
 import ie.wit.cgd.bunnyhop.game.objects.Clouds;
+import ie.wit.cgd.bunnyhop.game.objects.CoffeeCup;
 import ie.wit.cgd.bunnyhop.game.objects.Feather;
 import ie.wit.cgd.bunnyhop.game.objects.Goal;
 import ie.wit.cgd.bunnyhop.game.objects.GoldCoin;
@@ -27,7 +37,8 @@ public class Level {
 		ITEM_FEATHER(255, 0, 255),        // purple
 		ITEM_GOLD_COIN(255, 255, 0),      // yellow
 		GOAL(0,0,255),					  // blue
-		HEART(255,0,0);					  // red
+		HEART(255,0,0),				  	  // red
+		COFFEE_CUP(166,90,90);			  //brown
 
 		private int color;
 
@@ -45,12 +56,13 @@ public class Level {
 	}
 
 	// objects
-	public Array<Rock>  rocks;
-	public BunnyHead bunnyHead;
-	public Array<Goal> goals;
-	public Array<Heart> hearts;
-	public Array<GoldCoin> goldCoins;
-	public Array<Feather> feathers;
+	public Array<Rock>  		rocks;
+	public BunnyHead 			bunnyHead;
+	public Array<Goal> 			goals;
+	public Array <CoffeeCup> 	coffeeCups;
+	public Array<Heart> 		hearts;
+	public Array<GoldCoin> 		goldCoins;
+	public Array<Feather> 		feathers;
 
 
 	// decoration
@@ -68,6 +80,7 @@ public class Level {
 
 		goals = new Array<Goal>();
 		hearts = new Array<Heart>();
+		coffeeCups = new Array<CoffeeCup>();
 		// objects
 		rocks = new Array<Rock>();
 		goldCoins = new Array<GoldCoin>();
@@ -127,6 +140,12 @@ public class Level {
 					obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
 					hearts.add((Heart)obj);
 					System.out.println("Spawned heart");
+				}else if(BLOCK_TYPE.COFFEE_CUP.sameColor(currentPixel)){
+					obj = new CoffeeCup();
+					offsetHeight = -2.0f;
+					obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
+					coffeeCups.add((CoffeeCup)obj);
+					System.out.println("Spawned heart");
 				}else {                                                                // unknown object/pixel color
 					int r = 0xff & (currentPixel >>> 24); // red color channel
 					int g = 0xff & (currentPixel >>> 16); // green color channel
@@ -160,12 +179,15 @@ public class Level {
 			goldCoin.render(batch);             
 		for (Feather feather : feathers)                // Draw Feathers
 			feather.render(batch); 
-		for(Heart heart : hearts)
+		for(Heart heart : hearts)						//Draw Hearts.
 			heart.render(batch);
-		for(Goal goal : goals)
+		for(Goal goal : goals)							//Draws Goals.
 			goal.render(batch);
+		for(CoffeeCup coffeeCup : coffeeCups)			//Draw Coffee Cups.
+			coffeeCup.render(batch);
+		 
+		bunnyHead.render(batch);    					// Draw Bunny Head.
 		
-		bunnyHead.render(batch);    
 		waterOverlay.render(batch);                     // Draw Water Overlay
 		clouds.render(batch);                           // Draw Clouds
 	}
@@ -182,6 +204,8 @@ public class Level {
 			feather.update(deltaTime);
 		for(Heart heart : hearts)
 			heart.update(deltaTime);
+		for(CoffeeCup coffeeCup : coffeeCups)
+			coffeeCup.update(deltaTime);
 		clouds.update(deltaTime);
 	}
 }

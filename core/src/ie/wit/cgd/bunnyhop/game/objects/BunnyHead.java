@@ -1,8 +1,18 @@
+/**
+ * @file        BunnyHead.java
+ * @author      Dean Gaffney 20067423
+ * @assignment  BunnyHead character class
+ * @brief       This class controls all the actions of the bunny head.
+ *
+ * @notes       
+ * 				
+ */
 package ie.wit.cgd.bunnyhop.game.objects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
+
 import ie.wit.cgd.bunnyhop.game.Assets;
 import ie.wit.cgd.bunnyhop.util.Constants;
 
@@ -23,11 +33,14 @@ public class BunnyHead extends AbstractGameObject {
 	}
 
 	private TextureRegion   regHead;
+	private TextureRegion 	regFlameHead;
 	public VIEW_DIRECTION   viewDirection;
 	public float            timeJumping;
 	public JUMP_STATE       jumpState;
 	public boolean          hasFeatherPowerup;
+	public boolean			hasCoffeePowerUp;
 	public float            timeLeftFeatherPowerup;
+	public float			timeLeftCoffeePowerup;
 
 	public BunnyHead() {
 		init();
@@ -50,8 +63,11 @@ public class BunnyHead extends AbstractGameObject {
 		jumpState = JUMP_STATE.FALLING;                       // Jump state
 		timeJumping = 0;
 
-		hasFeatherPowerup = false;                            // Power-ups
+		hasFeatherPowerup = false;                            // Feather Power-ups
 		timeLeftFeatherPowerup = 0;
+		
+		hasCoffeePowerUp = false;							 //Coffee Power-Ups.
+		timeLeftCoffeePowerup = 0;
 	};
 
 
@@ -86,6 +102,26 @@ public class BunnyHead extends AbstractGameObject {
 		if (jumpState != JUMP_STATE.GROUNDED)
 			super.updateMotionY(deltaTime);
 	}
+	
+	@Override
+	protected void updateMotionX(float deltaTime) {
+		if(hasCoffeePowerUp){
+			if (velocity.x != 0) {
+				// Apply friction
+				if (velocity.x > 0) {
+					velocity.x = Math.max((velocity.x*2) - friction.x * deltaTime, 0);
+				} else {
+					velocity.x = Math.min((velocity.x*2) + friction.x * deltaTime, 0);
+				}
+			}
+			// Apply acceleration
+			velocity.x += acceleration.x * deltaTime;
+			velocity.x = MathUtils.clamp(velocity.x*2, -terminalVelocity.x*2, terminalVelocity.x*2);
+
+		}else{
+			super.updateMotionX(deltaTime);
+		}
+	};
 
 	@Override
 	public void render(SpriteBatch batch) {
@@ -94,6 +130,8 @@ public class BunnyHead extends AbstractGameObject {
 		// Set special color when game object has a feather power-up
 		if (hasFeatherPowerup)
 			batch.setColor(1.0f, 0.8f, 0.0f, 1.0f);
+		if(hasCoffeePowerUp)
+			batch.setColor(1.0f, 0, 0, 0.5f);
 		// Draw image
 		reg = regHead;
 		batch.draw(reg.getTexture(), position.x, position.y, origin.x,
@@ -112,12 +150,22 @@ public class BunnyHead extends AbstractGameObject {
 		if (velocity.x != 0) {
 			viewDirection = velocity.x < 0 ? VIEW_DIRECTION.LEFT : VIEW_DIRECTION.RIGHT;
 		}
+		//deals with feather pick up
 		if (timeLeftFeatherPowerup > 0) {
 			timeLeftFeatherPowerup -= deltaTime;
 			if (timeLeftFeatherPowerup < 0) {
 				// disable power-up
 				timeLeftFeatherPowerup = 0;
 				setFeatherPowerup(false);
+			}
+		}
+		//deals with coffee pick up
+		if(timeLeftCoffeePowerup > 0){
+			timeLeftCoffeePowerup -= deltaTime;
+			if(timeLeftCoffeePowerup < 0){
+				//disable power-up
+				timeLeftCoffeePowerup = 0;
+				setCoffeePowerup(false);
 			}
 		}
 	}
@@ -154,5 +202,14 @@ public class BunnyHead extends AbstractGameObject {
 
 	public boolean hasFeatherPowerup() {
 		return hasFeatherPowerup && timeLeftFeatherPowerup > 0;
+	};
+	
+	public void setCoffeePowerup(boolean pickedUp){
+		hasCoffeePowerUp = pickedUp;
+		if(pickedUp)timeLeftCoffeePowerup = Constants.ITEM_COFFEE_POWERUP_DURATION;
+	};
+	
+	public boolean hasCoffeePowerup(){
+		return hasCoffeePowerUp && timeLeftCoffeePowerup > 0;
 	};
 }
