@@ -139,20 +139,18 @@ public class Level {
 					offsetHeight = -2.0f;
 					obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
 					hearts.add((Heart)obj);
-					System.out.println("Spawned heart");
 				}else if(BLOCK_TYPE.COFFEE_CUP.sameColor(currentPixel)){
 					obj = new CoffeeCup();
 					offsetHeight = -2.0f;
 					obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
 					coffeeCups.add((CoffeeCup)obj);
-					System.out.println("Spawned heart");
 				}else {                                                                // unknown object/pixel color
 					int r = 0xff & (currentPixel >>> 24); // red color channel
 					int g = 0xff & (currentPixel >>> 16); // green color channel
 					int b = 0xff & (currentPixel >>> 8);  // blue color channel
 					int a = 0xff & currentPixel;          // alpha channel
-					Gdx.app.error(TAG, "Unknown object at x<" + pixelX + "> y<" + pixelY + ">: r<" + r + "> g<" + g
-							+ "> b<" + b + "> a<" + a + ">");
+					/*Gdx.app.error(TAG, "Unknown object at x<" + pixelX + "> y<" + pixelY + ">: r<" + r + "> g<" + g
+							+ "> b<" + b + "> a<" + a + ">");*/
 				}
 				lastPixel = currentPixel;
 			}
@@ -168,7 +166,7 @@ public class Level {
 
 		// free memory
 		pixmap.dispose();
-		Gdx.app.debug(TAG, "level '" + filename + "' loaded");
+		//Gdx.app.debug(TAG, "level '" + filename + "' loaded");
 	}
 
 	public void render(SpriteBatch batch) {

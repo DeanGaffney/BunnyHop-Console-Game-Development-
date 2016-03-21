@@ -114,36 +114,36 @@ public class WorldController extends InputAdapter{
 		switch (keycode) { // Reset game world
 		case Keys.R:
 			init();
-			Gdx.app.debug(TAG, "Game world resetted");
+			//Gdx.app.debug(TAG, "Game world resetted");
 			break;
 		case Keys.ENTER:
 			// Toggle camera follow
 			cameraHelper.setTarget(cameraHelper.hasTarget() ? null : level.bunnyHead);
-			Gdx.app.debug(TAG, "Camera follow enabled: " + cameraHelper.hasTarget());
+			//Gdx.app.debug(TAG, "Camera follow enabled: " + cameraHelper.hasTarget());
 			break;
 		case Keys.NUM_1:
 			currentLevel = 1;
-			Gdx.app.debug(TAG, "Level 1 selected ");
+			//Gdx.app.debug(TAG, "Level 1 selected ");
 			init();
 			break;
 		case Keys.NUM_2:
 			currentLevel = 2;
-			Gdx.app.debug(TAG, "Level 2 selected ");
+			//Gdx.app.debug(TAG, "Level 2 selected ");
 			init();
 			break;
 		case Keys.NUM_3:
 			currentLevel = 3;
-			Gdx.app.debug(TAG, "Level 3 selected ");
+			//Gdx.app.debug(TAG, "Level 3 selected ");
 			init();
 			break;
 		case Keys.NUM_4:
 			currentLevel = 4;
-			Gdx.app.debug(TAG, "Level 4 selected ");
+			//Gdx.app.debug(TAG, "Level 4 selected ");
 			init();
 			break;
 		case Keys.NUM_5:
 			currentLevel = 5;
-			Gdx.app.debug(TAG, "Level 5 selected ");
+			//Gdx.app.debug(TAG, "Level 5 selected ");
 			init();
 			break;
 		}
@@ -177,7 +177,6 @@ public class WorldController extends InputAdapter{
 		timer -= deltaTime;
 		if (isGameOver()) {
 			timeLeftGameOverDelay -= deltaTime;
-			System.out.println("Time left over delay: " + timeLeftGameOverDelay);
 			if (timeLeftGameOverDelay < 0) init();
 		} else {
 			handleInputGame(deltaTime);
@@ -234,7 +233,6 @@ public class WorldController extends InputAdapter{
 	private void onCollisionBunnyWithGoldCoin(GoldCoin goldcoin) {
 		goldcoin.collected = true;
 		score += goldcoin.getScore();
-		Gdx.app.log(TAG, "Gold coin collected");
 	};
 
 	//allocates extra life if player needs one and collides with a heart game object.
@@ -242,8 +240,6 @@ public class WorldController extends InputAdapter{
 		if(lives < Constants.LIVES_START){
 			heart.collected = true;
 			lives++;
-			System.out.println(lives);
-			Gdx.app.log(TAG, "Heart collected");
 		}
 	}
 
@@ -251,20 +247,17 @@ public class WorldController extends InputAdapter{
 		coffeeCup.collected = true;
 		score += coffeeCup.getScore();
 		level.bunnyHead.setCoffeePowerup(true);
-		Gdx.app.log(TAG, "Coffee collected");
 	}
 
 	private void onCollisionBunnyWithFeather(Feather feather) {
 		feather.collected = true;
 		score += feather.getScore();
 		level.bunnyHead.setFeatherPowerup(true);
-		Gdx.app.log(TAG, "Feather collected");
 	};
 
 	private void onCollisionBunnyWithGoal(Goal goal){
 		goal.collected = true;
 		goals++;
-		Gdx.app.log(TAG, "Goal collected");
 		timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
 	};
 
@@ -321,7 +314,6 @@ public class WorldController extends InputAdapter{
 			r2.set(heart.position.x,heart.position.y,heart.bounds.width,heart.bounds.height);
 			if(!r1.overlaps(r2))continue;
 			onCollisionBunnyWithHeart(heart);
-			System.out.println("Collided with heart");
 		}
 	}
 

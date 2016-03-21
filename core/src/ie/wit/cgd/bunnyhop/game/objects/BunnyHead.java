@@ -33,7 +33,6 @@ public class BunnyHead extends AbstractGameObject {
 	}
 
 	private TextureRegion   regHead;
-	private TextureRegion 	regFlameHead;
 	public VIEW_DIRECTION   viewDirection;
 	public float            timeJumping;
 	public JUMP_STATE       jumpState;
